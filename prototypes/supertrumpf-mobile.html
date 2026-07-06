@@ -1,0 +1,407 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Supertrumpf · Mobile UI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&display=swap" rel="stylesheet" />
+<style>
+:root {
+  --table:#10393a; --table-deep:#081f20;
+  --paper:#f6efde; --paper-edge:#e3d9bf;
+  --ink:#24281f; --ink-soft:#5a5f52;
+  --mustard:#e3a81c; --mustard-bright:#f0b52e; --red:#d2472e;
+  --white-soft:rgba(246,239,222,0.86);
+  --fam-A:#d2472e; --fam-B:#2f6da8; --fam-C:#c98f12; --fam-D:#3e8a4f; --fam-E:#7a4a9e; --fam-F:#2c8c86;
+  --display:'Oswald','Arial Narrow',sans-serif;
+  --body:system-ui,-apple-system,'Segoe UI',sans-serif;
+  --card-ratio: 5 / 7;   /* Standard-Spielkartenverhältnis (Poker/Trading), gilt überall */
+}
+* { box-sizing: border-box; }
+html, body { height:100%; margin:0; overflow:hidden; -webkit-tap-highlight-color:transparent; }
+body {
+  font-family:var(--body); background:#1c1e1f;
+  display:flex; align-items:center; justify-content:center; min-height:100dvh;
+}
+
+/* --------------------------------------------------- Geräte-Rahmen (echtes iPhone-Verhältnis) */
+.device {
+  position:relative;
+  /* Höhe bestimmt die Grösse; Breite ergibt sich aus dem fixen iPhone-Verhältnis
+     390:844 (19,5:9). So bleibt die Form bei jeder Fenstergrösse korrekt. */
+  height:min(844px, calc(100dvh - 24px));
+  aspect-ratio:390 / 844;
+  background:radial-gradient(ellipse at 50% 12%, var(--table) 0%, var(--table-deep) 100%);
+  border-radius:44px;
+  box-shadow:0 0 0 11px #0c0d0d, 0 0 0 13px #2a2c2d, 0 26px 60px rgba(0,0,0,0.6);
+  overflow:hidden; color:var(--white-soft);
+}
+@media (max-width:430px) {
+  body { background:var(--table-deep); }
+  .device { height:100dvh; width:100vw; aspect-ratio:auto; border-radius:0; box-shadow:none; }
+}
+
+.app { position:absolute; inset:0; display:flex; flex-direction:column; overflow:hidden; }
+
+/* Statusleiste (Deko) */
+.statusbar { flex:0 0 auto; height:34px; display:flex; align-items:center; justify-content:space-between;
+  padding:0 24px; font-size:0.72rem; font-weight:600; }
+.statusbar .dots { letter-spacing:2px; }
+
+/* Kopf: Modus + Raumname (die "wichtige Info oben") */
+.header { flex:0 0 auto; display:flex; align-items:center; justify-content:space-between;
+  padding:4px 16px 10px; border-bottom:1px solid rgba(246,239,222,0.1); }
+.header .mode-wrap { display:flex; flex-direction:column; line-height:1; }
+.header .eyebrow { font-size:0.58rem; letter-spacing:0.24em; text-transform:uppercase; color:var(--white-soft); opacity:0.6; }
+.header .mode { font-family:var(--display); font-weight:700; font-size:1.15rem; letter-spacing:0.06em; color:var(--mustard); }
+.header .room { font-size:0.72rem; opacity:0.72; text-align:right; }
+.header .room b { display:block; font-family:var(--display); font-size:0.95rem; letter-spacing:0.1em; color:var(--paper); opacity:1; }
+
+/* Bühne: enthält Ruhezustand (deine Karte) + Aufdeckungs-Overlay */
+.stage { flex:1 1 auto; min-height:0; position:relative; }
+
+/* ------------------------------------------------------ Ruhezustand: nur deine Karte */
+.playfield { position:absolute; inset:0; container-type:size; display:flex; flex-direction:column;
+  align-items:center; justify-content:center; gap:8px; padding:12px; }
+
+.mycard {
+  /* Kleineres Mass aus "passt in die Breite" (92cqw) und "passt in die Höhe"
+     (84cqh, über 5:7 in Breite umgerechnet). So bleibt die ganze Karte sichtbar,
+     egal wie stark der Rahmen skaliert. */
+  width:min(92cqw, calc(84cqh * 5 / 7)); aspect-ratio:var(--card-ratio); height:auto;
+  display:flex; flex-direction:column; gap:5px;
+  background:linear-gradient(160deg, var(--paper) 0%, var(--paper-edge) 100%);
+  color:var(--ink); border-radius:16px; border:1px solid #cfc3a3;
+  box-shadow:inset 0 0 0 4px var(--paper), inset 0 0 0 5px #cfc3a3, 0 8px 22px rgba(0,0,0,0.4);
+  padding:11px;
+}
+.mycard-head { display:flex; align-items:center; gap:6px; }
+.mycard-idx { font-family:var(--display); font-weight:700; font-size:0.86rem; color:#fff; background:var(--ink-soft); border-radius:5px; padding:0 6px; }
+.mycard[data-family='A'] .mycard-idx{background:var(--fam-A)} .mycard[data-family='B'] .mycard-idx{background:var(--fam-B)}
+.mycard[data-family='C'] .mycard-idx{background:var(--fam-C)} .mycard[data-family='D'] .mycard-idx{background:var(--fam-D)}
+.mycard[data-family='E'] .mycard-idx{background:var(--fam-E)} .mycard[data-family='F'] .mycard-idx{background:var(--fam-F)}
+.mycard-fam { font-size:0.62rem; text-transform:uppercase; letter-spacing:0.06em; color:var(--ink-soft);
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+/* Bild füllt den Restraum der 5:7-Karte -> Verhältnis bleibt immer korrekt */
+.mycard-img { flex:1 1 auto; min-height:0; width:100%; object-fit:cover; border-radius:8px; border:1px solid #cfc3a3; }
+.mycard-name { font-family:var(--display); font-weight:600; font-size:1.02rem; line-height:1.05; }
+.attrs { display:flex; flex-direction:column; gap:2px; }
+.attr-row {
+  display:flex; align-items:center; gap:6px; width:100%;
+  min-height:42px; background:none; border:1px solid transparent; border-radius:9px;
+  padding:5px 9px; color:var(--ink); text-align:left; cursor:pointer; font:inherit;
+  touch-action:manipulation; user-select:none;
+  transition:background .1s, border-color .1s, transform .08s;
+}
+.attr-row:hover { background:rgba(227,168,28,0.16); }
+.attr-row:active { background:rgba(227,168,28,0.45); transform:scale(0.99); }
+.attr-row:focus-visible { outline:none; border-color:var(--mustard); background:rgba(227,168,28,0.2); }
+.attr-row .lab { font-size:0.82rem; white-space:nowrap; }
+.attr-row .dots { flex:1; border-bottom:2px dotted rgba(36,40,31,0.35); transform:translateY(-2px); }
+.attr-row .val { font-family:var(--display); font-weight:700; font-size:0.96rem; font-variant-numeric:tabular-nums; }
+.attr-row .u { font-size:0.62rem; color:var(--ink-soft); margin-left:2px; }
+.attr-row .dir { font-size:0.56rem; opacity:0.45; margin-left:3px; }
+.pile-label { font-size:0.68rem; opacity:0.66; letter-spacing:0.06em; }
+
+/* ---------------------------------------------------- Aufdeckung (Overlay über der Bühne) */
+.disclosure {
+  position:absolute; inset:0; container-type:size; display:none; flex-direction:column; align-items:center;
+  padding:12px 12px 14px; gap:8px;
+  background:radial-gradient(ellipse at 50% 0%, rgba(227,168,28,0.07), transparent 55%), rgba(8,20,20,0.92);
+  backdrop-filter:blur(2px);
+}
+.disclosure.show { display:flex; }
+
+/* Rangliste / Kartenzahlen – NUR hier sichtbar */
+.ranking { display:flex; gap:6px; flex-wrap:wrap; justify-content:center; width:100%; }
+.rank-chip {
+  display:flex; align-items:baseline; gap:5px; padding:4px 10px; border-radius:999px;
+  background:rgba(246,239,222,0.08); border:1px solid rgba(246,239,222,0.16); font-size:0.76rem;
+  transition:border-color .2s, box-shadow .2s;
+}
+.rank-chip.pot { border-style:dashed; }
+.rank-chip.is-winner { border-color:var(--mustard); box-shadow:0 0 0 1px var(--mustard); }
+.rank-chip .rn { font-weight:600; }
+.rank-chip .rc { font-family:var(--display); font-size:0.95rem; color:var(--paper); }
+.rank-chip .rc .d { font-size:0.6rem; margin-left:3px; color:var(--mustard); opacity:0; transition:opacity .25s; }
+.rank-chip .rc .d.show { opacity:1; }
+
+.attr-head { text-align:center; opacity:0; transform:translateY(-6px); transition:opacity .3s, transform .3s; margin-top:2px; }
+.attr-head.show { opacity:1; transform:none; }
+.attr-kicker { font-size:0.6rem; letter-spacing:0.16em; text-transform:uppercase; opacity:0.6; }
+.attr-name { font-family:var(--display); font-weight:700; font-size:1.3rem; color:var(--paper); line-height:1.1; }
+.attr-dir { font-size:0.66rem; color:var(--mustard); }
+
+.reveal { display:flex; gap:8px; justify-content:center; align-items:flex-start; margin-top:4px; }
+.rcard {
+  width:min(28cqw, calc(32cqh * 5 / 7)); aspect-ratio:var(--card-ratio);
+  display:flex; flex-direction:column; gap:3px;
+  border-radius:11px; padding:6px;
+  background:linear-gradient(160deg, var(--paper) 0%, var(--paper-edge) 100%);
+  color:var(--ink); border:1px solid #cfc3a3;
+  box-shadow:inset 0 0 0 2px var(--paper), inset 0 0 0 3px #cfc3a3, 0 5px 13px rgba(0,0,0,0.35);
+  opacity:0; transform:translateY(20px) rotate(-3deg) scale(0.96);
+  transition:opacity .42s cubic-bezier(.2,.7,.2,1), transform .42s cubic-bezier(.2,.7,.2,1), filter .35s, box-shadow .35s;
+}
+.rcard.in { opacity:1; transform:none; }
+.rcard.loser { filter:grayscale(0.7) brightness(0.86); opacity:0.72; }
+.rcard.winner { box-shadow:inset 0 0 0 2px var(--paper), inset 0 0 0 3px var(--mustard), 0 9px 22px rgba(227,168,28,0.42); transform:translateY(-5px) scale(1.05); }
+.rcard-head { display:flex; align-items:center; gap:4px; }
+.rcard-idx { font-family:var(--display); font-weight:700; font-size:0.66rem; color:#fff; background:var(--ink-soft); border-radius:4px; padding:0 5px; }
+.rcard[data-family='A'] .rcard-idx{background:var(--fam-A)} .rcard[data-family='B'] .rcard-idx{background:var(--fam-B)}
+.rcard[data-family='C'] .rcard-idx{background:var(--fam-C)} .rcard[data-family='D'] .rcard-idx{background:var(--fam-D)}
+.rcard[data-family='E'] .rcard-idx{background:var(--fam-E)} .rcard[data-family='F'] .rcard-idx{background:var(--fam-F)}
+.rcard-img { flex:1 1 auto; min-height:0; width:100%; object-fit:cover; border-radius:5px; border:1px solid #cfc3a3; }
+.rcard-name { font-family:var(--display); font-weight:600; font-size:0.64rem; line-height:1.02; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.chip { display:flex; align-items:baseline; justify-content:center; gap:3px; margin-top:1px;
+  background:#ece3cc; border:1px solid #cfc3a3; border-radius:7px; padding:3px; position:relative;
+  transition:background .35s, transform .35s, box-shadow .35s; }
+.chip .num { font-family:var(--display); font-weight:700; font-size:1.05rem; font-variant-numeric:tabular-nums; color:var(--ink); }
+.chip .unit { font-size:0.56rem; font-weight:600; color:var(--ink-soft); }
+.chip.hidden .num, .chip.hidden .unit { visibility:hidden; }
+.chip.win { background:linear-gradient(160deg, var(--mustard-bright), var(--mustard)); box-shadow:0 3px 11px rgba(227,168,28,0.5); transform:scale(1.05); }
+.chip.beaten .num { color:#9a5040; }
+.chip.beaten::after { content:''; position:absolute; left:8%; right:8%; top:52%; height:3px; background:var(--red); border-radius:2px; transform:scaleX(0); transform-origin:left; transition:transform .3s cubic-bezier(.5,0,.2,1); }
+.chip.beaten.struck::after { transform:scaleX(1); }
+
+.verdict { min-height:42px; display:flex; align-items:center; justify-content:center; margin-top:auto; padding:0 8px; }
+.verdict-inner { display:inline-flex; flex-direction:column; align-items:center; gap:1px; padding:7px 16px; border-radius:999px;
+  font-family:var(--display); text-align:center; opacity:0; transform:translateY(8px) scale(0.96); transition:opacity .38s, transform .38s; }
+.verdict-inner.show { opacity:1; transform:none; }
+.verdict-inner .h { font-size:1.02rem; font-weight:700; letter-spacing:0.02em; }
+.verdict-inner .d { font-size:0.68rem; font-weight:500; font-family:var(--body); opacity:0.92; }
+.verdict-inner.win { background:var(--mustard); color:var(--ink); }
+.verdict-inner.lose { background:var(--red); color:#fff; }
+.verdict-inner.tie { background:rgba(246,239,222,0.14); color:var(--paper); border:1px solid rgba(246,239,222,0.3); }
+
+#fly { position:absolute; inset:0; pointer-events:none; z-index:60; }
+.home-ind { flex:0 0 auto; height:20px; display:flex; align-items:center; justify-content:center; }
+.home-ind::after { content:''; width:120px; height:5px; border-radius:3px; background:rgba(246,239,222,0.4); }
+
+@media (prefers-reduced-motion:reduce) { * { transition-duration:0.01ms !important; } }
+</style>
+</head>
+<body>
+<div class="device">
+  <div class="app">
+    <div class="statusbar"><span>9:41</span><span class="dots">▂▄▆ 5G ￭</span></div>
+
+    <div class="header">
+      <div class="mode-wrap">
+        <span class="eyebrow">Quartett</span>
+        <span class="mode">Supertrumpf</span>
+      </div>
+      <div class="room">Raum<b>HWBV8</b></div>
+    </div>
+
+    <div class="stage">
+      <div class="playfield" id="playfield">
+        <div class="mycard" id="mycard"></div>
+        <div class="pile-label" id="pile">Dein Stapel · 8 Karten</div>
+      </div>
+
+      <div class="disclosure" id="disclosure">
+        <div class="ranking" id="ranking"></div>
+        <div class="attr-head" id="attrHead">
+          <div class="attr-kicker">Verglichen</div>
+          <div class="attr-name" id="attrName">–</div>
+          <div class="attr-dir" id="attrDir"></div>
+        </div>
+        <div class="reveal" id="reveal"></div>
+        <div class="verdict"><div class="verdict-inner" id="verdict"></div></div>
+      </div>
+    </div>
+
+    <div class="home-ind"></div>
+  </div>
+  <div id="fly"></div>
+</div>
+
+<script>
+const $ = (s, r=document) => r.querySelector(s);
+
+const ATTRS = [
+  { key:'ps',      label:'Leistung',      unit:'PS',   higherWins:true  },
+  { key:'vmax',    label:'Höchstgeschw.', unit:'km/h', higherWins:true  },
+  { key:'gewicht', label:'Gewicht',       unit:'kg',   higherWins:false },
+  { key:'hubraum', label:'Hubraum',       unit:'ccm',  higherWins:true  },
+  { key:'baujahr', label:'Baujahr',       unit:'',     higherWins:true  },
+];
+// [index, family, name, initials, ps, vmax, gewicht, hubraum, baujahr]
+const CARS = {
+  f40:      ['A1','A','Ferrari F40','FF',478,324,1100,2936,1987],
+  countach: ['A2','A','Lambo Countach','LC',455,295,1490,5167,1985],
+  p959:     ['B1','B','Porsche 959','P9',450,317,1450,2849,1986],
+  m1:       ['B2','B','BMW M1','BM',277,262,1300,3453,1978],
+  mcl:      ['E1','E','McLaren F1','MF',627,386,1140,6064,1993],
+  veyron:   ['E2','E','Bugatti Veyron','BV',1001,407,1888,7993,2005],
+};
+function card(key){ const c=CARS[key]; return { key,index:c[0],family:c[1],name:c[2],initials:c[3],
+  values:{ps:c[4],vmax:c[5],gewicht:c[6],hubraum:c[7],baujahr:c[8]} }; }
+const SEAT_LABEL = { you:'Du', ben:'Ben', cleo:'Cleo', pot:'Pott' };
+const FAM_COLOR = { A:'#d2472e',B:'#2f6da8',C:'#c98f12',D:'#3e8a4f',E:'#7a4a9e',F:'#2c8c86' };
+
+const ROUNDS = [
+  { you:'f40',      ben:'m1',     cleo:'p959'    },
+  { you:'m1',       ben:'veyron', cleo:'countach'}, // schwach bei PS, top beim Gewicht
+  { you:'countach', ben:'f40',    cleo:'mcl'     },
+  { you:'p959',     ben:'veyron', cleo:'m1'      },
+];
+
+let counts = { you:8, ben:8, cleo:8, pot:0 };
+let roundIx = 0, busy = false;
+const wait = (ms) => new Promise(r => setTimeout(r, ms));
+const fmt = (n) => new Intl.NumberFormat('de-CH').format(n);
+
+function carSVG(c){
+  const color = FAM_COLOR[c.family];
+  return 'data:image/svg+xml;utf8,' + encodeURIComponent(
+`<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 200' preserveAspectRatio='xMidYMid slice'>
+<defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='${color}'/><stop offset='1' stop-color='#081F20'/></linearGradient></defs>
+<rect width='320' height='200' fill='url(#g)'/>
+<g fill='rgba(255,255,255,0.92)'><path d='M60 128 q18 -30 60 -32 l70 -2 q42 2 62 30 l14 4 q8 4 8 12 l0 8 q0 6 -8 6 l-206 0 q-8 0 -8 -6 l0 -10 q0 -8 8 -10 z'/>
+<circle cx='105' cy='152' r='16' fill='#081F20' stroke='rgba(255,255,255,0.92)' stroke-width='6'/>
+<circle cx='225' cy='152' r='16' fill='#081F20' stroke='rgba(255,255,255,0.92)' stroke-width='6'/></g>
+<text x='160' y='56' text-anchor='middle' font-family='Arial' font-size='34' font-weight='bold' fill='rgba(255,255,255,0.85)'>${c.initials}</text></svg>`);
+}
+function famName(f){ return { A:'Italienische Legenden',B:'Deutsche Sportwagen',C:'Muscle Cars',D:'Rallye-Legenden',E:'Hypercars',F:'Kleinwagen-Helden' }[f] ?? ('Familie '+f); }
+
+/* -------------------------------------------------- Ruhezustand: deine Karte */
+function renderMyCard(){
+  const you = card(ROUNDS[roundIx].you);
+  const el = $('#mycard'); el.dataset.family = you.family;
+  el.innerHTML =
+    `<div class="mycard-head"><span class="mycard-idx">${you.index}</span><span class="mycard-fam">${famName(you.family)}</span></div>
+     <img class="mycard-img" src="${carSVG(you)}" alt="" />
+     <div class="mycard-name">${you.name}</div>
+     <div class="attrs">
+       ${ATTRS.map(a => `
+         <button class="attr-row" data-attr="${a.key}">
+           <span class="lab">${a.label}</span><span class="dots"></span>
+           <span class="val">${fmt(you.values[a.key])}${a.unit?`<span class="u">${a.unit}</span>`:''}</span>
+           <span class="dir">${a.higherWins?'▲':'▼'}</span>
+         </button>`).join('')}
+     </div>`;
+  el.querySelectorAll('.attr-row').forEach(b => b.addEventListener('click', () => play(b.dataset.attr)));
+  $('#pile').textContent = `Dein Stapel · ${counts.you} Karten`;
+}
+
+/* Rangliste (nur bei Aufdeckung): Spieler nach Kartenzahl sortiert + Pott */
+function renderRanking(){
+  const players = ['you','ben','cleo']
+    .map(seat => ({ seat, n: counts[seat] }))
+    .sort((a,b) => b.n - a.n);
+  const chips = players.map(p =>
+    `<div class="rank-chip" data-seat="${p.seat}"><span class="rn">${SEAT_LABEL[p.seat]}</span><span class="rc" data-count>${p.n}<span class="d"></span></span></div>`);
+  chips.push(`<div class="rank-chip pot" data-seat="pot"><span class="rn">Pott</span><span class="rc" data-count>${counts.pot}<span class="d"></span></span></div>`);
+  $('#ranking').innerHTML = chips.join('');
+}
+function setRankCount(seat,n){ const el=document.querySelector(`.rank-chip[data-seat="${seat}"] [data-count]`); if(!el) return; const d=el.querySelector('.d'); el.childNodes[0].nodeValue=String(n); el.appendChild(d); }
+function showRankDelta(seat,t){ const d=document.querySelector(`.rank-chip[data-seat="${seat}"] .d`); if(d){ d.textContent=t; d.classList.add('show'); } }
+
+function buildReveal(seat,c,attr){
+  const el=document.createElement('div'); el.className='rcard'; el.dataset.family=c.family; el.dataset.seat=seat;
+  el.innerHTML =
+    `<div class="rcard-head"><span class="rcard-idx">${c.index}</span></div>
+     <img class="rcard-img" src="${carSVG(c)}" alt="" />
+     <div class="rcard-name">${SEAT_LABEL[seat]} · ${c.name}</div>
+     <div class="chip hidden"><span class="num">${fmt(c.values[attr.key])}</span>${attr.unit?`<span class="unit">${attr.unit}</span>`:''}</div>`;
+  return el;
+}
+function center(el){ const r=el.getBoundingClientRect(); return {x:r.left+r.width/2,y:r.top+r.height/2}; }
+
+/* ============================================================= Spielzug */
+async function play(attrKey){
+  if (busy) return; busy = true;
+  const attr = ATTRS.find(a => a.key === attrKey);
+  const r = ROUNDS[roundIx];
+  const entries = [
+    { seat:'you',  c:card(r.you)  },
+    { seat:'ben',  c:card(r.ben)  },
+    { seat:'cleo', c:card(r.cleo) },
+  ].map(e => ({ ...e, value:e.c.values[attr.key] }));
+
+  // Aufdeckung einblenden (Rangliste erscheint erst jetzt)
+  renderRanking();
+  const disc = $('#disclosure'); disc.classList.add('show');
+  $('#attrName').textContent = attr.label;
+  $('#attrDir').textContent = attr.higherWins ? '▲ höchster Wert gewinnt' : '▼ tiefster Wert gewinnt';
+  await wait(60);
+  $('#attrHead').classList.add('show');
+  await wait(300);
+
+  const reveal = $('#reveal'); reveal.innerHTML='';
+  const els = entries.map(e => { const el=buildReveal(e.seat,e.c,attr); reveal.appendChild(el); return el; });
+  for (const el of els) { el.classList.add('in'); await wait(150); }
+  await wait(220);
+
+  els.forEach(el => { const chip=el.querySelector('.chip'); chip.classList.remove('hidden');
+    chip.animate([{transform:'scale(0.6)',opacity:0},{transform:'scale(1.12)',opacity:1,offset:.7},{transform:'scale(1)',opacity:1}],
+      { duration:320, easing:'cubic-bezier(.2,.7,.2,1)' }); });
+  await wait(560);
+
+  const best = attr.higherWins ? Math.max(...entries.map(e=>e.value)) : Math.min(...entries.map(e=>e.value));
+  const topSeats = entries.filter(e=>e.value===best).map(e=>e.seat);
+  const isTie = topSeats.length>1;
+  const winner = isTie ? null : topSeats[0];
+
+  els.forEach(el => { const seat=el.dataset.seat, chip=el.querySelector('.chip');
+    if (topSeats.includes(seat)) { chip.classList.add('win'); if(!isTie) el.classList.add('winner'); }
+    else { el.classList.add('loser'); chip.classList.add('beaten'); } });
+  await wait(80);
+  els.forEach(el => { const chip=el.querySelector('.chip'); if(chip.classList.contains('beaten')) chip.classList.add('struck'); });
+
+  const v=$('#verdict'); v.className='verdict-inner';
+  const beaten=entries.filter(e=>!topSeats.includes(e.seat)).map(e=>fmt(e.value));
+  const u=attr.unit?' '+attr.unit:'';
+  if (isTie){ v.classList.add('tie','show'); v.innerHTML=`<span class="h">UNENTSCHIEDEN</span><span class="d">${fmt(best)}${u} · ${entries.length} Karten in den Pott</span>`; }
+  else if (winner==='you'){ v.classList.add('win','show'); v.innerHTML=`<span class="h">DU GEWINNST</span><span class="d">${fmt(best)}${u} schlägt ${beaten.join(' · ')}</span>`; }
+  else { v.classList.add('lose','show'); v.innerHTML=`<span class="h">${SEAT_LABEL[winner]} gewinnt</span><span class="d">${fmt(best)}${u} schlägt ${beaten.join(' · ')}</span>`; }
+
+  const targetSeat = isTie ? 'pot' : winner;
+  document.querySelector(`.rank-chip[data-seat="${targetSeat}"]`)?.classList.add('is-winner');
+  await wait(950);
+
+  await fly(els, targetSeat);
+  counts[targetSeat] += entries.length;
+  setRankCount(targetSeat, counts[targetSeat]);
+  showRankDelta(targetSeat, `+${entries.length}`);
+  await wait(650);
+
+  // Aufräumen + nächste Runde
+  disc.classList.remove('show');
+  $('#attrHead').classList.remove('show');
+  $('#reveal').innerHTML=''; v.className='verdict-inner';
+  roundIx = (roundIx+1) % ROUNDS.length;
+  renderMyCard();
+  busy = false;
+}
+
+async function fly(els, targetSeat){
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const layer = $('#fly');
+  const t = center(document.querySelector(`.rank-chip[data-seat="${targetSeat}"]`));
+  const flights = els.map((el,i) => {
+    const rr = el.getBoundingClientRect();
+    const clone = el.cloneNode(true);
+    Object.assign(clone.style, { position:'fixed', left:rr.left+'px', top:rr.top+'px', width:rr.width+'px', height:rr.height+'px', margin:'0', transition:'none' });
+    clone.classList.remove('winner','loser');
+    layer.appendChild(clone); el.style.visibility='hidden';
+    const dx=t.x-(rr.left+rr.width/2), dy=t.y-(rr.top+rr.height/2);
+    return clone.animate(
+      reduce ? [{opacity:1},{opacity:0}] :
+      [{transform:'translate(0,0) scale(1)',opacity:1},
+       {transform:`translate(${dx*0.5}px,${dy*0.5-20}px) scale(0.8) rotate(${i%2?6:-6}deg)`,opacity:1,offset:.55},
+       {transform:`translate(${dx}px,${dy}px) scale(0.12)`,opacity:0.1}],
+      { duration:(reduce?200:600), easing:'cubic-bezier(.5,0,.3,1)', delay:i*70, fill:'forwards' }
+    ).finished.then(() => clone.remove());
+  });
+  await Promise.all(flights);
+}
+
+renderMyCard();
+</script>
+</body>
+</html>

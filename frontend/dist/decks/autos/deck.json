@@ -1,0 +1,356 @@
+{
+  "name": "Autos – Klassiker",
+  "families": {
+    "A": "Italienische Legenden",
+    "B": "Deutsche Sportwagen",
+    "C": "Muscle Cars",
+    "D": "Rallye-Legenden",
+    "E": "Hypercars",
+    "F": "Kleinwagen-Helden"
+  },
+  "attributes": [
+    {
+      "key": "ps",
+      "label": "Leistung",
+      "unit": "PS",
+      "higherWins": true
+    },
+    {
+      "key": "vmax",
+      "label": "Höchstgeschw.",
+      "unit": "km/h",
+      "higherWins": true
+    },
+    {
+      "key": "gewicht",
+      "label": "Gewicht",
+      "unit": "kg",
+      "higherWins": false
+    },
+    {
+      "key": "hubraum",
+      "label": "Hubraum",
+      "unit": "ccm",
+      "higherWins": true
+    },
+    {
+      "key": "baujahr",
+      "label": "Baujahr",
+      "higherWins": true
+    }
+  ],
+  "cards": [
+    {
+      "id": "a1",
+      "family": "A",
+      "name": "Ferrari F40",
+      "image": "img/a1.svg",
+      "values": {
+        "ps": 478,
+        "vmax": 324,
+        "gewicht": 1100,
+        "hubraum": 2936,
+        "baujahr": 1987
+      }
+    },
+    {
+      "id": "a2",
+      "family": "A",
+      "name": "Lamborghini Countach",
+      "image": "img/a2.svg",
+      "values": {
+        "ps": 455,
+        "vmax": 295,
+        "gewicht": 1490,
+        "hubraum": 5167,
+        "baujahr": 1985
+      }
+    },
+    {
+      "id": "a3",
+      "family": "A",
+      "name": "Maserati Bora",
+      "image": "img/a3.svg",
+      "values": {
+        "ps": 310,
+        "vmax": 275,
+        "gewicht": 1500,
+        "hubraum": 4719,
+        "baujahr": 1971
+      }
+    },
+    {
+      "id": "a4",
+      "family": "A",
+      "name": "Alfa Romeo Montreal",
+      "image": "img/a4.svg",
+      "values": {
+        "ps": 200,
+        "vmax": 224,
+        "gewicht": 1270,
+        "hubraum": 2593,
+        "baujahr": 1970
+      }
+    },
+    {
+      "id": "b1",
+      "family": "B",
+      "name": "Porsche 959",
+      "image": "img/b1.svg",
+      "values": {
+        "ps": 450,
+        "vmax": 317,
+        "gewicht": 1450,
+        "hubraum": 2849,
+        "baujahr": 1986
+      }
+    },
+    {
+      "id": "b2",
+      "family": "B",
+      "name": "BMW M1",
+      "image": "img/b2.svg",
+      "values": {
+        "ps": 277,
+        "vmax": 262,
+        "gewicht": 1300,
+        "hubraum": 3453,
+        "baujahr": 1978
+      }
+    },
+    {
+      "id": "b3",
+      "family": "B",
+      "name": "Mercedes 300 SL",
+      "image": "img/b3.svg",
+      "values": {
+        "ps": 215,
+        "vmax": 250,
+        "gewicht": 1310,
+        "hubraum": 2996,
+        "baujahr": 1954
+      }
+    },
+    {
+      "id": "b4",
+      "family": "B",
+      "name": "Audi quattro",
+      "image": "img/b4.svg",
+      "values": {
+        "ps": 200,
+        "vmax": 222,
+        "gewicht": 1290,
+        "hubraum": 2144,
+        "baujahr": 1980
+      }
+    },
+    {
+      "id": "c1",
+      "family": "C",
+      "name": "Dodge Charger R/T",
+      "image": "img/c1.svg",
+      "values": {
+        "ps": 425,
+        "vmax": 210,
+        "gewicht": 1750,
+        "hubraum": 6980,
+        "baujahr": 1969
+      }
+    },
+    {
+      "id": "c2",
+      "family": "C",
+      "name": "Ford Mustang Boss 429",
+      "image": "img/c2.svg",
+      "values": {
+        "ps": 375,
+        "vmax": 190,
+        "gewicht": 1620,
+        "hubraum": 7030,
+        "baujahr": 1969
+      }
+    },
+    {
+      "id": "c3",
+      "family": "C",
+      "name": "Chevrolet Corvette C2",
+      "image": "img/c3.svg",
+      "values": {
+        "ps": 425,
+        "vmax": 240,
+        "gewicht": 1450,
+        "hubraum": 6489,
+        "baujahr": 1965
+      }
+    },
+    {
+      "id": "c4",
+      "family": "C",
+      "name": "Plymouth Barracuda",
+      "image": "img/c4.svg",
+      "values": {
+        "ps": 390,
+        "vmax": 200,
+        "gewicht": 1580,
+        "hubraum": 7210,
+        "baujahr": 1970
+      }
+    },
+    {
+      "id": "d1",
+      "family": "D",
+      "name": "Lancia Delta Integrale",
+      "image": "img/d1.svg",
+      "values": {
+        "ps": 215,
+        "vmax": 220,
+        "gewicht": 1300,
+        "hubraum": 1995,
+        "baujahr": 1989
+      }
+    },
+    {
+      "id": "d2",
+      "family": "D",
+      "name": "Ford RS200",
+      "image": "img/d2.svg",
+      "values": {
+        "ps": 250,
+        "vmax": 230,
+        "gewicht": 1180,
+        "hubraum": 1803,
+        "baujahr": 1985
+      }
+    },
+    {
+      "id": "d3",
+      "family": "D",
+      "name": "Peugeot 205 T16",
+      "image": "img/d3.svg",
+      "values": {
+        "ps": 200,
+        "vmax": 210,
+        "gewicht": 1145,
+        "hubraum": 1775,
+        "baujahr": 1984
+      }
+    },
+    {
+      "id": "d4",
+      "family": "D",
+      "name": "Subaru Impreza WRX STI",
+      "image": "img/d4.svg",
+      "values": {
+        "ps": 280,
+        "vmax": 250,
+        "gewicht": 1270,
+        "hubraum": 1994,
+        "baujahr": 1998
+      }
+    },
+    {
+      "id": "e1",
+      "family": "E",
+      "name": "McLaren F1",
+      "image": "img/e1.svg",
+      "values": {
+        "ps": 627,
+        "vmax": 386,
+        "gewicht": 1140,
+        "hubraum": 6064,
+        "baujahr": 1993
+      }
+    },
+    {
+      "id": "e2",
+      "family": "E",
+      "name": "Bugatti Veyron",
+      "image": "img/e2.svg",
+      "values": {
+        "ps": 1001,
+        "vmax": 407,
+        "gewicht": 1888,
+        "hubraum": 7993,
+        "baujahr": 2005
+      }
+    },
+    {
+      "id": "e3",
+      "family": "E",
+      "name": "Koenigsegg CCX",
+      "image": "img/e3.svg",
+      "values": {
+        "ps": 806,
+        "vmax": 395,
+        "gewicht": 1280,
+        "hubraum": 4700,
+        "baujahr": 2006
+      }
+    },
+    {
+      "id": "e4",
+      "family": "E",
+      "name": "Porsche Carrera GT",
+      "image": "img/e4.svg",
+      "values": {
+        "ps": 612,
+        "vmax": 334,
+        "gewicht": 1380,
+        "hubraum": 5733,
+        "baujahr": 2003
+      }
+    },
+    {
+      "id": "f1",
+      "family": "F",
+      "name": "Mini Cooper S",
+      "image": "img/f1.svg",
+      "values": {
+        "ps": 70,
+        "vmax": 154,
+        "gewicht": 640,
+        "hubraum": 1071,
+        "baujahr": 1963
+      }
+    },
+    {
+      "id": "f2",
+      "family": "F",
+      "name": "Fiat 500 Abarth",
+      "image": "img/f2.svg",
+      "values": {
+        "ps": 38,
+        "vmax": 130,
+        "gewicht": 520,
+        "hubraum": 595,
+        "baujahr": 1965
+      }
+    },
+    {
+      "id": "f3",
+      "family": "F",
+      "name": "Renault 5 Turbo",
+      "image": "img/f3.svg",
+      "values": {
+        "ps": 160,
+        "vmax": 200,
+        "gewicht": 970,
+        "hubraum": 1397,
+        "baujahr": 1980
+      }
+    },
+    {
+      "id": "f4",
+      "family": "F",
+      "name": "VW Golf GTI",
+      "image": "img/f4.svg",
+      "values": {
+        "ps": 110,
+        "vmax": 182,
+        "gewicht": 810,
+        "hubraum": 1588,
+        "baujahr": 1976
+      }
+    }
+  ]
+}

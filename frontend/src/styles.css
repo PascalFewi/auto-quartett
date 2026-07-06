@@ -1,0 +1,320 @@
+/* ============================================================= Design-Tokens
+   Vintage-Quartett: Petrol-Spieltisch, warmer Kartenkarton, Senfgelb & Signal-
+   rot wie auf alten Kartenschachteln. Display-Font Oswald (kondensiert). */
+:root {
+  --table: #10393a;
+  --table-deep: #081f20;
+  --paper: #f6efde;
+  --paper-edge: #e3d9bf;
+  --ink: #24281f;
+  --ink-soft: #5a5f52;
+  --mustard: #e3a81c;
+  --red: #d2472e;
+  --white-soft: rgba(246, 239, 222, 0.85);
+
+  --fam-A: #d2472e;
+  --fam-B: #2f6da8;
+  --fam-C: #c98f12;
+  --fam-D: #3e8a4f;
+  --fam-E: #7a4a9e;
+  --fam-F: #2c8c86;
+
+  --display: 'Oswald', 'Arial Narrow', sans-serif;
+  --body: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --radius: 10px;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: var(--body);
+  color: var(--white-soft);
+  background: radial-gradient(ellipse at 50% 20%, var(--table) 0%, var(--table-deep) 100%);
+  min-height: 100vh;
+}
+
+button {
+  font-family: var(--body);
+  font-size: 0.95rem;
+  padding: 0.55rem 1rem;
+  border-radius: var(--radius);
+  border: 1px solid rgba(246, 239, 222, 0.35);
+  background: rgba(246, 239, 222, 0.08);
+  color: var(--white-soft);
+  cursor: pointer;
+  transition: background 0.15s, transform 0.1s;
+}
+button:hover:not(:disabled) { background: rgba(246, 239, 222, 0.18); }
+button:active:not(:disabled) { transform: scale(0.98); }
+button:disabled { opacity: 0.45; cursor: not-allowed; }
+button:focus-visible { outline: 2px solid var(--mustard); outline-offset: 2px; }
+
+button.primary {
+  background: var(--mustard);
+  border-color: var(--mustard);
+  color: var(--ink);
+  font-weight: 700;
+}
+button.primary:hover:not(:disabled) { background: #f0b52e; }
+button.active { background: var(--mustard); border-color: var(--mustard); color: var(--ink); }
+
+input, select {
+  font-family: var(--body);
+  font-size: 1rem;
+  padding: 0.55rem 0.8rem;
+  border-radius: var(--radius);
+  border: 1px solid rgba(246, 239, 222, 0.35);
+  background: rgba(8, 31, 32, 0.6);
+  color: var(--white-soft);
+}
+input:focus, select:focus { outline: 2px solid var(--mustard); }
+
+/* ================================================================== Layout */
+.app { max-width: 1100px; margin: 0 auto; padding: 0 1rem 4rem; }
+
+.topbar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0.8rem 0;
+}
+.brand {
+  font-family: var(--display); font-weight: 700; font-size: 1.3rem;
+  letter-spacing: 0.18em; color: var(--mustard); cursor: pointer;
+}
+.room-tag { font-size: 0.85rem; opacity: 0.9; display: flex; gap: 0.6rem; align-items: center; }
+.link-btn {
+  background: none; border: none; padding: 0; color: var(--mustard);
+  text-decoration: underline; font-size: 0.85rem;
+}
+
+.center-note { text-align: center; padding: 4rem 1rem; opacity: 0.8; }
+.hint { font-size: 0.85rem; opacity: 0.75; margin: 0.4rem 0; }
+
+/* ==================================================================== Home */
+.home { max-width: 380px; margin: 8vh auto 0; text-align: center; }
+.home-title {
+  font-family: var(--display); font-weight: 700; font-size: 3.4rem;
+  letter-spacing: 0.1em; margin: 0; line-height: 1; color: var(--paper);
+}
+.home-title .tilt {
+  display: inline-block; color: var(--mustard);
+  transform: rotate(-2deg) translateY(-2px);
+}
+.home-sub { margin: 0.6rem 0 2rem; opacity: 0.8; }
+
+.field { display: flex; flex-direction: column; gap: 0.3rem; text-align: left; margin-bottom: 1rem; }
+.field > span { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.08em; opacity: 0.75; }
+
+.home-actions { display: flex; flex-direction: column; gap: 0.8rem; }
+.home-actions .primary { padding: 0.8rem; font-size: 1.05rem; }
+.divider { opacity: 0.5; font-size: 0.85rem; }
+.join-row { display: flex; gap: 0.5rem; }
+.code-input {
+  flex: 1; text-transform: uppercase; letter-spacing: 0.25em;
+  font-family: var(--display); text-align: center;
+}
+
+/* =================================================================== Lobby */
+.lobby { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+.panel {
+  background: rgba(8, 31, 32, 0.55);
+  border: 1px solid rgba(246, 239, 222, 0.15);
+  border-radius: var(--radius);
+  padding: 1rem 1.2rem;
+}
+.panel-title {
+  font-family: var(--display); font-weight: 600; font-size: 0.95rem;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--mustard); margin: 0 0 0.8rem;
+}
+.big-code {
+  font-family: var(--display); font-size: 2.6rem; font-weight: 700;
+  letter-spacing: 0.35em; text-align: center; color: var(--paper);
+  margin-bottom: 0.8rem; user-select: all;
+}
+.player-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.5rem; }
+.player-list li { display: flex; align-items: center; gap: 0.5rem; }
+.player-list li.offline { opacity: 0.5; }
+.dot { width: 9px; height: 9px; border-radius: 50%; }
+.dot.on { background: #6fcf6f; }
+.dot.off { background: #999; }
+.chip {
+  font-size: 0.7rem; padding: 0.1rem 0.5rem; border-radius: 999px;
+  background: rgba(246, 239, 222, 0.15); text-transform: uppercase; letter-spacing: 0.05em;
+}
+.chip.you { background: var(--mustard); color: var(--ink); }
+.mode-toggle { display: flex; gap: 0.5rem; margin: 0.8rem 0; }
+.mode-toggle button { flex: 1; }
+.start-btn { width: 100%; padding: 0.8rem; font-size: 1.05rem; }
+
+/* ==================================================================== Tisch */
+.table { display: flex; flex-direction: column; gap: 1rem; }
+
+.opponents { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+.seat {
+  background: rgba(8, 31, 32, 0.55);
+  border: 1px solid rgba(246, 239, 222, 0.15);
+  border-radius: var(--radius);
+  padding: 0.5rem 0.9rem;
+  display: flex; flex-direction: column; gap: 0.15rem;
+  min-width: 120px;
+}
+.seat.turn { border-color: var(--mustard); box-shadow: 0 0 0 1px var(--mustard); }
+.seat.out { opacity: 0.45; }
+.seat.offline .seat-name::after { content: ' ⌁'; opacity: 0.6; }
+.seat-name { font-weight: 600; font-size: 0.9rem; }
+.seat-cards { font-size: 0.78rem; opacity: 0.75; }
+.seat-quartets { display: flex; gap: 0.25rem; flex-wrap: wrap; }
+
+.family-chip {
+  font-family: var(--display); font-size: 0.72rem; font-weight: 600;
+  width: 1.3rem; height: 1.3rem; border-radius: 4px;
+  display: inline-flex; align-items: center; justify-content: center;
+  color: #fff; background: var(--ink-soft);
+}
+
+.turn-note { font-size: 0.95rem; margin: 0.3rem 0; }
+.banner {
+  background: rgba(227, 168, 28, 0.15);
+  border: 1px solid rgba(227, 168, 28, 0.4);
+  border-radius: var(--radius);
+  padding: 0.6rem 1rem; font-size: 0.9rem;
+  display: flex; gap: 0.8rem; align-items: center; flex-wrap: wrap;
+}
+.banner.warn { background: rgba(210, 71, 46, 0.2); border-color: var(--red); }
+
+.pot {
+  font-family: var(--display); letter-spacing: 0.08em;
+  color: var(--mustard); font-size: 0.95rem; margin-bottom: 0.4rem;
+}
+
+.reveal { margin-top: 0.4rem; }
+.reveal-title { margin-bottom: 0.5rem; font-size: 0.9rem; }
+.reveal-cards { display: flex; gap: 0.8rem; flex-wrap: wrap; }
+.reveal-entry { display: flex; flex-direction: column; gap: 0.3rem; align-items: center; }
+.reveal-entry.winner .card { box-shadow: 0 0 0 3px var(--mustard), 0 6px 18px rgba(0, 0, 0, 0.4); }
+.reveal-owner { font-size: 0.78rem; opacity: 0.85; }
+
+.my-area { display: flex; flex-direction: column; align-items: center; gap: 0.4rem; }
+
+.ask-panel {
+  background: rgba(8, 31, 32, 0.55);
+  border: 1px solid rgba(246, 239, 222, 0.15);
+  border-radius: var(--radius);
+  padding: 0.8rem 1rem;
+}
+.pick-row { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 0.4rem 0 0.8rem; }
+.family-btn[data-family='A'].active { background: var(--fam-A); border-color: var(--fam-A); color: #fff; }
+.family-btn[data-family='B'].active { background: var(--fam-B); border-color: var(--fam-B); color: #fff; }
+.family-btn[data-family='C'].active { background: var(--fam-C); border-color: var(--fam-C); color: #fff; }
+.family-btn[data-family='D'].active { background: var(--fam-D); border-color: var(--fam-D); color: #fff; }
+.family-btn[data-family='E'].active { background: var(--fam-E); border-color: var(--fam-E); color: #fff; }
+.family-btn[data-family='F'].active { background: var(--fam-F); border-color: var(--fam-F); color: #fff; }
+
+.hand { display: flex; flex-direction: column; gap: 0.6rem; width: 100%; }
+.hand-group { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+
+/* ==================================================== Die Quartettkarte 🃏 */
+.card {
+  width: 230px;
+  background: linear-gradient(160deg, var(--paper) 0%, var(--paper-edge) 100%);
+  color: var(--ink);
+  border-radius: 12px;
+  border: 1px solid #cfc3a3;
+  box-shadow: inset 0 0 0 4px var(--paper), inset 0 0 0 5px #cfc3a3,
+    0 4px 14px rgba(0, 0, 0, 0.35);
+  padding: 10px;
+  user-select: none;
+}
+.card-sm { width: 150px; padding: 7px; }
+
+.card-head { display: flex; align-items: center; gap: 0.45rem; margin-bottom: 6px; }
+.card-index {
+  font-family: var(--display); font-weight: 700; font-size: 1rem;
+  color: #fff; background: var(--ink-soft);
+  border-radius: 5px; padding: 0.05rem 0.4rem;
+}
+.card[data-family='A'] .card-index { background: var(--fam-A); }
+.card[data-family='B'] .card-index { background: var(--fam-B); }
+.card[data-family='C'] .card-index { background: var(--fam-C); }
+.card[data-family='D'] .card-index { background: var(--fam-D); }
+.card[data-family='E'] .card-index { background: var(--fam-E); }
+.card[data-family='F'] .card-index { background: var(--fam-F); }
+.card-family {
+  font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.06em;
+  color: var(--ink-soft); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+
+.card-img {
+  width: 100%; aspect-ratio: 16 / 10; object-fit: cover;
+  border-radius: 6px; border: 1px solid #cfc3a3; display: block;
+}
+.card-name {
+  font-family: var(--display); font-weight: 600; font-size: 1.05rem;
+  margin: 6px 0 4px; line-height: 1.15;
+}
+.card-sm .card-name { font-size: 0.85rem; }
+
+.card-stats { display: flex; flex-direction: column; }
+.stat-row {
+  display: flex; align-items: baseline; gap: 0.35rem;
+  padding: 3px 2px; font-size: 0.82rem; color: var(--ink);
+  background: none; border: none; border-radius: 5px; width: 100%;
+  text-align: left; transition: background 0.12s;
+}
+.card-sm .stat-row { font-size: 0.7rem; padding: 1px 2px; }
+.stat-row.clickable { cursor: pointer; }
+.stat-row.clickable:hover { background: rgba(227, 168, 28, 0.35); }
+.stat-row.hl { background: rgba(227, 168, 28, 0.45); font-weight: 700; }
+.stat-label { white-space: nowrap; }
+.stat-dots {
+  flex: 1; border-bottom: 2px dotted rgba(36, 40, 31, 0.4);
+  transform: translateY(-3px);
+}
+.stat-value { font-variant-numeric: tabular-nums; font-weight: 600; white-space: nowrap; }
+.stat-dir { font-size: 0.6rem; opacity: 0.5; }
+
+/* ================================================================= Overlay */
+.overlay {
+  position: fixed; inset: 0; background: rgba(8, 31, 32, 0.8);
+  display: flex; align-items: center; justify-content: center; z-index: 20;
+}
+.overlay-card {
+  background: var(--paper); color: var(--ink);
+  border-radius: 14px; padding: 2rem 2.5rem; text-align: center;
+  max-width: 420px; box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+}
+.overlay-card h2 { font-family: var(--display); margin: 0.4rem 0 0.8rem; }
+.overlay-card .hint { color: var(--ink-soft); }
+.overlay-trophy { font-size: 2.6rem; }
+
+/* ===================================================================== Log */
+.log {
+  background: rgba(8, 31, 32, 0.55);
+  border: 1px solid rgba(246, 239, 222, 0.15);
+  border-radius: var(--radius);
+  font-size: 0.82rem;
+}
+.log summary { padding: 0.5rem 1rem; cursor: pointer; opacity: 0.8; }
+.log-body { max-height: 160px; overflow-y: auto; padding: 0 1rem 0.8rem; opacity: 0.85; }
+.log-body div { padding: 1px 0; }
+
+/* =================================================================== Toast */
+.toast {
+  position: fixed; bottom: 1.2rem; left: 50%; transform: translateX(-50%);
+  background: var(--red); color: #fff;
+  padding: 0.6rem 1.2rem; border-radius: 999px;
+  font-size: 0.9rem; box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4); z-index: 30;
+}
+
+/* ================================================================== Mobile */
+@media (max-width: 520px) {
+  .card { width: 200px; }
+  .card-sm { width: 128px; }
+  .home-title { font-size: 2.6rem; }
+  .reveal-cards { gap: 0.5rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; }
+}
