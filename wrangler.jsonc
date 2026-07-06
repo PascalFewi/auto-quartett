@@ -1,32 +1,17 @@
 {
-  // Neues, eigenständiges Projekt. Landet nach dem Deploy zunächst auf
-  //   https://quartett.<account-subdomain>.workers.dev
   "name": "quartett",
   "main": "src/worker.ts",
   "compatibility_date": "2025-06-01",
-
-  // --- Eigene Domain: auto-quartett.ch -------------------------------------
-  // Erst scharfschalten, wenn die Domain als ZONE in deinem Cloudflare-Account
-  // aktiv ist (siehe README, Abschnitt "Eigene Domain"). Vorher schlägt ein
-  // Deploy mit diesen Zeilen fehl, weil Cloudflare die Zone noch nicht kennt.
-  // Betrifft komqom NICHT – das ist eine andere Zone.
-  //
-  // "routes": [
-  //   { "pattern": "auto-quartett.ch", "custom_domain": true },
-  //   { "pattern": "www.auto-quartett.ch", "custom_domain": true }
-  // ],
-
-  // Statische Assets: gebautes Frontend inkl. Decks (frontend/public wird
-  // von Vite 1:1 nach frontend/dist kopiert).
+  "workers_dev": true,
+  "routes": [
+    { "pattern": "auto-quartett.ch", "custom_domain": true },
+    { "pattern": "www.auto-quartett.ch", "custom_domain": true }
+  ],
   "assets": {
     "directory": "./frontend/dist",
     "binding": "ASSETS",
-    // SPA-Fallback: unbekannte Pfade liefern index.html (Client-Routing)
     "not_found_handling": "single-page-application"
   },
-
-  // Ein Durable Object pro Spielraum. "new_sqlite_classes" = SQLite-backed,
-  // damit läuft es im Free Plan.
   "durable_objects": {
     "bindings": [{ "name": "ROOMS", "class_name": "Room" }]
   },

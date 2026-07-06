@@ -31,42 +31,9 @@ alles über wrangler auf Port 8787).
 npm run deploy
 ```
 
-Landet zunächst auf `https://quartett.<account-subdomain>.workers.dev`.
-
-## Eigene Domain (auto-quartett.ch)
-
-`.ch` verkauft Cloudflare Registrar nicht, die Domain liegt also bei einem
-Schweizer Registrar. Ein Worker-**Custom-Domain** setzt aber zwingend eine
-**aktive Cloudflare-Zone** voraus – man kann keine Domain am Worker anhängen,
-deren DNS Cloudflare nicht verwaltet. Die Domain muss also zuerst als Zone in
-den Account, und das geht auf dem Free-Plan nur per Nameserver-Wechsel (das
-CNAME-only-„Partial Setup" gibt es erst ab Business).
-
-Ablauf im aktuellen Dashboard:
-
-1. **Zone anlegen:** Auf der Account-Startseite oben rechts **+ Add** →
-   **Existing domain** (früher „Add a site") → `auto-quartett.ch` eingeben,
-   **Free**-Plan wählen. Beim Scan-Angebot einfach fortfahren.
-2. **Nameserver umstellen:** Cloudflare zeigt zwei Nameserver an (z. B.
-   `xxx.ns.cloudflare.com`). Diese beim Schweizer Registrar (wo du die Domain
-   gekauft hast) als Nameserver eintragen – die bisherigen ersetzen.
-   Voraussetzung: dein Registrar erlaubt eigene Nameserver (manche „DNS-Lite"-
-   Tarife tun das nicht).
-3. **Warten auf Active:** Bis die Zone in Cloudflare den Status **Active** hat,
-   dauert es Minuten bis einige Stunden (je nach Registrar). Erst dann geht es
-   weiter – vorher schlägt ein Deploy mit Route fehl.
-4. **Route scharfschalten:** In `wrangler.jsonc` den `routes`-Block
-   einkommentieren (apex + www).
-5. **Deployen:** `npm run deploy` – Cloudflare legt DNS-Einträge und
-   TLS-Zertifikat automatisch an (`custom_domain: true`). Alternativ ginge das
-   auch im Dashboard unter **Worker → Settings → Domains & Routes → Add →
-   Custom Domain**, aber der `routes`-Block im Repo ist reproduzierbar und
-   damit der bessere Weg.
-
-Danach läuft alles über `https://auto-quartett.ch`. Das berührt komqom nicht:
-`auto-quartett.ch` ist eine eigene Zone, komqom eine andere. Solange der
-`routes`-Block auskommentiert ist, deployt das Projekt einfach auf
-`workers.dev` weiter – praktisch zum Testen, bis die Domain aktiv ist.
+Live auf `https://auto-quartett.ch`. Die `workers.dev`-URL
+(`https://quartett.<account-subdomain>.workers.dev`) bleibt zusätzlich als
+Test-Adresse aktiv.
 
 ## Eigene Decks
 
