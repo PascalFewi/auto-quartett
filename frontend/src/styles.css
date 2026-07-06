@@ -186,18 +186,6 @@ input:focus, select:focus { outline: 2px solid var(--mustard); }
 }
 .banner.warn { background: rgba(210, 71, 46, 0.2); border-color: var(--red); }
 
-.pot {
-  font-family: var(--display); letter-spacing: 0.08em;
-  color: var(--mustard); font-size: 0.95rem; margin-bottom: 0.4rem;
-}
-
-.reveal { margin-top: 0.4rem; }
-.reveal-title { margin-bottom: 0.5rem; font-size: 0.9rem; }
-.reveal-cards { display: flex; gap: 0.8rem; flex-wrap: wrap; }
-.reveal-entry { display: flex; flex-direction: column; gap: 0.3rem; align-items: center; }
-.reveal-entry.winner .card { box-shadow: 0 0 0 3px var(--mustard), 0 6px 18px rgba(0, 0, 0, 0.4); }
-.reveal-owner { font-size: 0.78rem; opacity: 0.85; }
-
 .my-area { display: flex; flex-direction: column; align-items: center; gap: 0.4rem; }
 
 .ask-panel {
@@ -315,12 +303,194 @@ input:focus, select:focus { outline: 2px solid var(--mustard); }
   font-size: 0.9rem; box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4); z-index: 30;
 }
 
+/* ============================================ Supertrumpf – Layout & Showdown
+   Übernommen aus prototypes/supertrumpf-mobile.html. Der Ruhezustand zeigt nur
+   die eigene Karte; die Rundenauflösung läuft als transientes Overlay ab. */
+.st { position: relative; }
+
+/* Schlanker Kopf (Modus + Raum) – nur auf schmalen Screens sichtbar. */
+.st-head { display: none; }
+.st-head-mode { display: flex; flex-direction: column; line-height: 1; }
+.st-head .eyebrow {
+  font-size: 0.58rem; letter-spacing: 0.24em; text-transform: uppercase;
+  color: var(--white-soft); opacity: 0.6;
+}
+.st-head .mode {
+  font-family: var(--display); font-weight: 700; font-size: 1.15rem;
+  letter-spacing: 0.06em; color: var(--mustard);
+}
+.st-head-room { display: flex; flex-direction: column; align-items: flex-end; gap: 1px; }
+.st-room-label { font-size: 0.72rem; opacity: 0.72; }
+.st-head-room b {
+  font-family: var(--display); font-size: 0.95rem; letter-spacing: 0.1em; color: var(--paper);
+}
+.st-leave {
+  background: none; border: none; padding: 0; margin-top: 1px;
+  color: var(--mustard); text-decoration: underline; font-size: 0.72rem; cursor: pointer;
+}
+
+/* Bühne + Ruhezustand */
+.st-stage { position: relative; }
+.st-playfield {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 0.5rem;
+}
+.st-turn { font-size: 0.92rem; text-align: center; opacity: 0.9; }
+.st-pile { font-size: 0.72rem; opacity: 0.66; letter-spacing: 0.06em; }
+.st-busy .st-playfield { pointer-events: none; }
+
+/* ------------------------------------------------ Aufdeckung (Overlay) */
+.st-disclosure {
+  position: fixed; inset: 0; z-index: 40;
+  display: flex; align-items: stretch; justify-content: center;
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(227, 168, 28, 0.07), transparent 55%),
+    rgba(8, 20, 20, 0.92);
+  backdrop-filter: blur(2px);
+}
+.st-disclosure-inner {
+  width: 100%; max-width: 440px; height: 100%;
+  container-type: size;
+  display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
+  padding: calc(16px + env(safe-area-inset-top)) 12px calc(18px + env(safe-area-inset-bottom));
+}
+
+/* Rangliste / Kartenzahlen – erscheinen NUR im Showdown. */
+.ranking { display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; width: 100%; }
+.rank-chip {
+  display: flex; align-items: baseline; gap: 5px; padding: 4px 10px; border-radius: 999px;
+  background: rgba(246, 239, 222, 0.08); border: 1px solid rgba(246, 239, 222, 0.16);
+  font-size: 0.76rem; transition: border-color 0.2s, box-shadow 0.2s;
+}
+.rank-chip.pot { border-style: dashed; }
+.rank-chip.is-winner { border-color: var(--mustard); box-shadow: 0 0 0 1px var(--mustard); }
+.rank-chip .rn { font-weight: 600; }
+.rank-chip .rc { font-family: var(--display); font-size: 0.95rem; color: var(--paper); }
+.rank-chip .rc .d { font-size: 0.6rem; margin-left: 3px; color: var(--mustard); opacity: 0; transition: opacity 0.25s; }
+.rank-chip .rc .d.show { opacity: 1; }
+
+/* Attribut-Schlagzeile */
+.attr-head {
+  text-align: center; opacity: 0; transform: translateY(-6px);
+  transition: opacity 0.3s, transform 0.3s; margin-top: 2px;
+}
+.attr-head.show { opacity: 1; transform: none; }
+.attr-kicker { font-size: 0.6rem; letter-spacing: 0.16em; text-transform: uppercase; opacity: 0.6; }
+.attr-name { font-family: var(--display); font-weight: 700; font-size: 1.3rem; color: var(--paper); line-height: 1.1; }
+.attr-dir { font-size: 0.66rem; color: var(--mustard); }
+
+/* Aufgedeckte Karten */
+.reveal { display: flex; gap: 8px; justify-content: center; align-items: flex-start; margin-top: 4px; }
+.rcard {
+  width: min(28cqw, calc(32cqh * 5 / 7)); aspect-ratio: var(--card-ratio);
+  display: flex; flex-direction: column; gap: 3px;
+  border-radius: 11px; padding: 6px;
+  background: linear-gradient(160deg, var(--paper) 0%, var(--paper-edge) 100%);
+  color: var(--ink); border: 1px solid #cfc3a3;
+  box-shadow: inset 0 0 0 2px var(--paper), inset 0 0 0 3px #cfc3a3, 0 5px 13px rgba(0, 0, 0, 0.35);
+  opacity: 0; transform: translateY(20px) rotate(-3deg) scale(0.96);
+  transition: opacity 0.42s cubic-bezier(0.2, 0.7, 0.2, 1),
+    transform 0.42s cubic-bezier(0.2, 0.7, 0.2, 1), filter 0.35s, box-shadow 0.35s;
+}
+.rcard.in { opacity: 1; transform: none; }
+.rcard.loser { filter: grayscale(0.7) brightness(0.86); opacity: 0.72; }
+.rcard.winner {
+  box-shadow: inset 0 0 0 2px var(--paper), inset 0 0 0 3px var(--mustard), 0 9px 22px rgba(227, 168, 28, 0.42);
+  transform: translateY(-5px) scale(1.05);
+}
+.rcard-head { display: flex; align-items: center; gap: 4px; }
+.rcard-idx { font-family: var(--display); font-weight: 700; font-size: 0.66rem; color: #fff; background: var(--ink-soft); border-radius: 4px; padding: 0 5px; }
+.rcard[data-family='A'] .rcard-idx { background: var(--fam-A); }
+.rcard[data-family='B'] .rcard-idx { background: var(--fam-B); }
+.rcard[data-family='C'] .rcard-idx { background: var(--fam-C); }
+.rcard[data-family='D'] .rcard-idx { background: var(--fam-D); }
+.rcard[data-family='E'] .rcard-idx { background: var(--fam-E); }
+.rcard[data-family='F'] .rcard-idx { background: var(--fam-F); }
+.rcard-img { flex: 1 1 auto; min-height: 0; width: 100%; object-fit: cover; border-radius: 5px; border: 1px solid #cfc3a3; }
+.rcard-name {
+  font-family: var(--display); font-weight: 600; font-size: 0.64rem; line-height: 1.02;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+
+/* Grosser Wert-Chip: nur das gespielte Attribut */
+.chip {
+  display: flex; align-items: baseline; justify-content: center; gap: 3px; margin-top: 1px;
+  background: #ece3cc; border: 1px solid #cfc3a3; border-radius: 7px; padding: 3px; position: relative;
+  transition: background 0.35s, transform 0.35s, box-shadow 0.35s;
+}
+.chip .num { font-family: var(--display); font-weight: 700; font-size: 1.05rem; font-variant-numeric: tabular-nums; color: var(--ink); }
+.chip .unit { font-size: 0.56rem; font-weight: 600; color: var(--ink-soft); }
+.chip.hidden .num, .chip.hidden .unit { visibility: hidden; }
+.chip.win { background: linear-gradient(160deg, var(--mustard-bright), var(--mustard)); box-shadow: 0 3px 11px rgba(227, 168, 28, 0.5); transform: scale(1.05); }
+.chip.beaten .num { color: #9a5040; }
+.chip.beaten::after {
+  content: ''; position: absolute; left: 8%; right: 8%; top: 52%; height: 3px;
+  background: var(--red); border-radius: 2px; transform: scaleX(0); transform-origin: left;
+  transition: transform 0.3s cubic-bezier(0.5, 0, 0.2, 1);
+}
+.chip.beaten.struck::after { transform: scaleX(1); }
+
+/* Urteilsbanner */
+.verdict { min-height: 42px; display: flex; align-items: center; justify-content: center; margin-top: auto; padding: 0 8px; }
+.verdict-inner {
+  display: inline-flex; flex-direction: column; align-items: center; gap: 1px; padding: 7px 16px;
+  border-radius: 999px; font-family: var(--display); text-align: center;
+  opacity: 0; transform: translateY(8px) scale(0.96); transition: opacity 0.38s, transform 0.38s;
+}
+.verdict-inner.show { opacity: 1; transform: none; }
+.verdict-inner .h { font-size: 1.02rem; font-weight: 700; letter-spacing: 0.02em; }
+.verdict-inner .d { font-size: 0.68rem; font-weight: 500; font-family: var(--body); opacity: 0.92; }
+.verdict-inner.win { background: var(--mustard); color: var(--ink); }
+.verdict-inner.lose { background: var(--red); color: #fff; }
+.verdict-inner.tie { background: rgba(246, 239, 222, 0.14); color: var(--paper); border: 1px solid rgba(246, 239, 222, 0.3); }
+
+/* Flug-Ebene für die zum Gewinner fliegenden Karten */
+.st-fly { position: fixed; inset: 0; pointer-events: none; z-index: 100; }
+
+/* ------------------------------------- Mobiles No-Scroll-Layout (nur schmal) */
+@media (max-width: 640px) {
+  .app--st {
+    height: 100dvh; max-width: none; overflow: hidden;
+    display: flex; flex-direction: column;
+    padding: 0 0 env(safe-area-inset-bottom);
+  }
+  .app--st .topbar { display: none; }
+  .app--st .table.st { flex: 1 1 auto; min-height: 0; gap: 0; }
+
+  .st-head {
+    display: flex; align-items: center; justify-content: space-between; flex: 0 0 auto;
+    padding: calc(8px + env(safe-area-inset-top)) 16px 10px;
+    border-bottom: 1px solid rgba(246, 239, 222, 0.1);
+  }
+  /* Gegner-Kartenzahlen & Log erscheinen auf Mobile nicht im Ruhezustand. */
+  .app--st .opponents,
+  .app--st .log { display: none; }
+
+  .st-stage { flex: 1 1 auto; min-height: 0; }
+  .st-playfield {
+    position: absolute; inset: 0; container-type: size; padding: 12px;
+  }
+  /* Karte fit-sicher: kleineres Mass aus Breite (92cqw) und Höhe (84cqh -> 5:7). */
+  .st-playfield .card { width: min(92cqw, calc(84cqh * 5 / 7)); }
+  /* Touch-Ergonomie der antippbaren Attributzeilen. */
+  .st-playfield .stat-row.clickable {
+    min-height: 44px; touch-action: manipulation; -webkit-tap-highlight-color: transparent;
+  }
+
+  .st-disclosure-inner { max-width: none; }
+
+  /* Reconnect-Banner soll das No-Scroll-Layout nicht sprengen. */
+  .app--st .banner.warn {
+    position: fixed; left: 12px; right: 12px; z-index: 50;
+    bottom: calc(12px + env(safe-area-inset-bottom));
+  }
+}
+
 /* ================================================================== Mobile */
 @media (max-width: 520px) {
   .card { width: 200px; }
   .card-sm { width: 128px; }
   .home-title { font-size: 2.6rem; }
-  .reveal-cards { gap: 0.5rem; }
 }
 
 @media (prefers-reduced-motion: reduce) {

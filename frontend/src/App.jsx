@@ -105,13 +105,20 @@ export default function App() {
   } else if (game.phase === 'lobby') {
     screen = <Lobby game={game} roomCode={roomCode} send={send} showToast={showToast} />;
   } else if (game.mode === 'supertrumpf') {
-    screen = deck ? <Supertrumpf game={game} deck={deck} send={send} /> : <Loading />;
+    screen = deck ? (
+      <Supertrumpf game={game} deck={deck} send={send} roomCode={roomCode} onLeave={leaveToHome} />
+    ) : (
+      <Loading />
+    );
   } else {
     screen = deck ? <Quartett game={game} deck={deck} send={send} /> : <Loading />;
   }
 
+  // Auf schmalen Screens läuft der Supertrumpf als No-Scroll-Handy-Layout.
+  const stFullscreen = !!game && game.phase !== 'lobby' && game.mode === 'supertrumpf';
+
   return (
-    <div className="app">
+    <div className={`app${stFullscreen ? ' app--st' : ''}`}>
       <header className="topbar">
         <span className="brand" onClick={leaveToHome} role="button" tabIndex={0}>
           QUARTETT
