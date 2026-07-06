@@ -9,8 +9,9 @@
   --ink: #24281f;
   --ink-soft: #5a5f52;
   --mustard: #e3a81c;
+  --mustard-bright: #f0b52e;
   --red: #d2472e;
-  --white-soft: rgba(246, 239, 222, 0.85);
+  --white-soft: rgba(246, 239, 222, 0.86);
 
   --fam-A: #d2472e;
   --fam-B: #2f6da8;
@@ -22,6 +23,8 @@
   --display: 'Oswald', 'Arial Narrow', sans-serif;
   --body: system-ui, -apple-system, 'Segoe UI', sans-serif;
   --radius: 10px;
+  /* Standard-Spielkartenverhältnis (Poker/Trading) – gilt für ALLE Karten-UIs. */
+  --card-ratio: 5 / 7;
 }
 
 * { box-sizing: border-box; }
@@ -217,6 +220,11 @@ input:focus, select:focus { outline: 2px solid var(--mustard); }
 /* ==================================================== Die Quartettkarte 🃏 */
 .card {
   width: 230px;
+  /* Einheitliches 5:7-Verhältnis. Die Karte ist ein Flex-Container, das Bild
+     füllt den Restplatz – so bleibt das Verhältnis exakt erhalten. */
+  aspect-ratio: var(--card-ratio);
+  display: flex;
+  flex-direction: column;
   background: linear-gradient(160deg, var(--paper) 0%, var(--paper-edge) 100%);
   color: var(--ink);
   border-radius: 12px;
@@ -246,7 +254,7 @@ input:focus, select:focus { outline: 2px solid var(--mustard); }
 }
 
 .card-img {
-  width: 100%; aspect-ratio: 16 / 10; object-fit: cover;
+  flex: 1 1 auto; min-height: 0; width: 100%; object-fit: cover;
   border-radius: 6px; border: 1px solid #cfc3a3; display: block;
 }
 .card-name {
